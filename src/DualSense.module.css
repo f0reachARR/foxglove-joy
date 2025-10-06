@@ -1,0 +1,452 @@
+.controller {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 1200px;
+  min-width: 1200px;
+  height: 600px;
+  aspect-ratio: 10/6;
+  background-color: rgb(189, 189, 189);
+  border-radius: 20px;
+  box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+
+  /* size */
+  --size-x-topparts: 250px;
+  --size-y-topparts: 400px;
+
+  /* positon */
+  --pos-x-topparts: 228px;
+
+  /* color  */
+  --color-gamepad-main: #f9f9f9;
+  --color-gamepad-sub: #808080;
+  --color-gamepad-button-main: #e3e3e3;
+  --color-gamepad-button-sub: #4f4f4f;
+  --color-gamepad-button-main-pressed: #b9b9b9;
+  --color-gamepad-button-sub-pressed: #1e1e1e;
+  --color-gamepad-button-base-pressed: #e5e5e5;
+  --color-gamepad-button-stickbg: #686868;
+}
+
+.body {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 90%;
+  width: 90%;
+  position: relative;
+}
+
+/* = button pressed ===================================================== */
+
+.button_pressed_main {
+  background-color: var(--color-gamepad-button-main-pressed) !important;
+  transition: background-color 0.1s;
+}
+
+.button_pressed_sub {
+  background-color: var(--color-gamepad-button-sub-pressed) !important;
+  transition: background-color 0.1s;
+}
+
+.button_pressed_base {
+  background-color: var(--color-gamepad-button-base-pressed) !important;
+  transition: background-color 0.1s;
+}
+
+/* = parts ============================================================== */
+.parts_topleft {
+  position: absolute;
+  background-color: var(--color-gamepad-main);
+  width: var(--size-x-topparts);
+  height: var(--size-y-topparts);
+  transform: translate(calc(-1 * var(--pos-x-topparts)), 0px);
+  clip-path: polygon(30% 5%, 85% 0%, 100% 30%, 20% 100%, 0% 95%);
+  z-index: 10;
+}
+
+.parts_topright {
+  position: absolute;
+  background-color: var(--color-gamepad-main);
+  width: var(--size-x-topparts);
+  height: var(--size-y-topparts);
+  transform: translate(var(--pos-x-topparts), 0px);
+  clip-path: polygon(70% 5%, 15% 0%, 0% 30%, 80% 100%, 100% 95%);
+  z-index: 10;
+}
+
+.parts_topcenter {
+  position: absolute;
+  background-color: var(--color-gamepad-main);
+  width: 260px;
+  height: 120px;
+  transform: translate(0px, -140px);
+  transform-origin: 0 0;
+  clip-path: polygon(0% 0%, 100% 0%, 85% 100%, 15% 100%);
+  z-index: 10;
+  transition: background-color 0.1s;
+}
+
+.parts_center {
+  position: absolute;
+  background-color: var(--color-gamepad-sub);
+  width: 360px;
+  height: 120px;
+  transform: translate(0px, -10px);
+  transform-origin: 0 0;
+  clip-path: polygon(24% 0%, 76% 0%, 100% 100%, 0% 100%);
+  z-index: 10;
+}
+
+/* = top buttons =========================================================== */
+.button_topleft_left {
+  position: absolute;
+  background-color: var(--color-gamepad-button-sub);
+  width: 50px;
+  height: 40px;
+  transform: translate(-254px, -205px);
+  clip-path: polygon(0% 30%, 100% 0%, 100% 83%, 0% 100%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_topright_right {
+  position: absolute;
+  background-color: var(--color-gamepad-button-sub);
+  width: 50px;
+  height: 40px;
+  transform: translate(254px, -205px);
+  clip-path: polygon(100% 30%, 0% 0%, 0% 83%, 100% 100%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_topleft_right {
+  position: absolute;
+  background-color: var(--color-gamepad-button-sub);
+  width: 50px;
+  height: 40px;
+  transform: translate(-199px, -213px);
+  clip-path: polygon(0% 20%, 100% 10%, 100% 84%, 0% 100%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_topright_left {
+  position: absolute;
+  background-color: var(--color-gamepad-button-sub);
+  width: 50px;
+  height: 40px;
+  transform: translate(199px, -213px);
+  clip-path: polygon(100% 20%, 0% 10%, 0% 84%, 100% 100%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+/* = left buttons ============================================================  */
+.button_lefttop {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 100px;
+  height: 100px;
+  transform: translate(-210px, -110px);
+  clip-path: polygon(30% 0%, 70% 0%, 67% 30%, 50% 45%, 33% 30%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_leftbottom {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 100px;
+  height: 100px;
+  transform: translate(-210px, -110px);
+  clip-path: polygon(30% 100%, 70% 100%, 67% 70%, 50% 55%, 33% 70%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_leftleft {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 100px;
+  height: 100px;
+  transform: translate(-210px, -110px);
+  clip-path: polygon(0% 30%, 30% 33%, 45% 50%, 30% 67%, 0% 70%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_leftright {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 100px;
+  height: 100px;
+  transform: translate(-210px, -110px);
+  clip-path: polygon(100% 30%, 70% 33%, 55% 50%, 70% 67%, 100% 70%);
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+/* = right buttons ============================================================ */
+
+.button_righttop {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 45px;
+  height: 45px;
+  transform: translate(210px, -140px);
+  border-radius: 50%;
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_rightbottom {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 45px;
+  height: 45px;
+  transform: translate(210px, -70px);
+  border-radius: 50%;
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_rightleft {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 45px;
+  height: 45px;
+  transform: translate(170px, -105px);
+  border-radius: 50%;
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_rightright {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 45px;
+  height: 45px;
+  transform: translate(250px, -105px);
+  border-radius: 50%;
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+/* = small buttons =========================================================== */
+
+.button_center_small {
+  position: absolute;
+  background-color: var(--color-gamepad-button-sub);
+  width: 40px;
+  height: 25px;
+  transform: translate(0px, -40px);
+  border-radius: 15%;
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_left_small {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 40px;
+  height: 15px;
+  transform: translate(-140px, -150px) rotate(70deg);
+  border-radius: 15px;
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+.button_right_small {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 40px;
+  height: 15px;
+  transform: translate(140px, -150px) rotate(110deg);
+  border-radius: 15px;
+  z-index: 11;
+  transition: background-color 0.1s;
+}
+
+/* = stick ================================================================== */
+
+.circle_left {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-gamepad-button-stickbg);
+  width: 70px;
+  height: 70px;
+  transform: translate(-70px, -10px);
+  border-radius: 50%;
+  z-index: 11;
+}
+
+.circle_right {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-gamepad-button-stickbg);
+  width: 70px;
+  height: 70px;
+  transform: translate(70px, -10px);
+  border-radius: 50%;
+  z-index: 11;
+}
+
+.stick {
+  position: absolute;
+  background-color: var(--color-gamepad-button-sub);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  z-index: 12;
+  transition: background-color transform 0.1s;
+}
+
+.stick_position {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 250px;
+  height: 110px;
+  z-index: 13;
+  transform: translate(0px, 120px);
+  border: 5px solid #b5b5b5;
+  border-radius: 15px;
+  padding: 15px;
+  max-width: 300px;
+  margin: 10px auto;
+  text-align: center;
+
+  display: grid;
+  grid-template-columns: 1fr 4fr 4fr;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.field_name_left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  border-left: 2px solid black;
+}
+
+.field_name_right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+
+.field_name_x {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  border-top: 2px solid black;
+}
+
+.field_name_y {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1 / 2;
+  grid-row: 3 / 4;
+}
+
+.field_value_leftx {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+}
+
+.field_value_lefty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
+  border-left: 2px solid black;
+}
+
+.field_value_rightx {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 3 / 4;
+  grid-row: 2 / 3;
+  border-top: 2px solid black;
+}
+
+.field_value_righty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 3 / 4;
+  grid-row: 3 / 4;
+}
+
+/* = left status ================================================================== */
+.status_panel {
+  position: absolute;
+  background-color: var(--color-gamepad-button-main);
+  width: 190px;
+  height: 490px;
+  z-index: 13;
+  border: 5px solid #b5b5b5;
+  border-radius: 15px;
+  padding: 15px;
+  max-width: 300px;
+  margin: 10px auto;
+  text-align: center;
+  display: grid;
+  grid-template-columns: 4fr 4fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.left_status {
+  transform: translate(-470px, 0px);
+}
+
+.right_status {
+  transform: translate(470px, 0px);
+}
+
+.status_name_left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+}
+
+.status_name_right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 2px solid black;
+}
+
+.status_button_left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 2px solid black;
+}
+
+.status_button_right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
