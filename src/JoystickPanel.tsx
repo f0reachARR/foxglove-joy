@@ -15,15 +15,38 @@ type Mode = "publish" | "visualize";
 type Config = {
   mode: Mode;
   topic: string;
+  mappingPreset: MappingPreset;
   buttonMapping: number[];
   axesMapping: number[];
+  deadzone: number;
 };
+
+// Mapping presets for different controllers
+const MAPPING_PRESETS = {
+  default: {
+    buttonMapping: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+    axesMapping: [0, 1, 2, 3],
+  },
+  dualsense: {
+    // DualSense (PlayStation 5) standard mapping
+    buttonMapping: [0, 1, 2, 3, 8, 16, 9, 10, 11, 4, 5, 12, 13, 14, 15],
+    axesMapping: [0, 1, 2, 3, 6, 7],
+  },
+  custom: {
+    buttonMapping: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+    axesMapping: [0, 1, 2, 3],
+  },
+};
+
+type MappingPreset = keyof typeof MAPPING_PRESETS;
 
 const DEFAULT_CONFIG: Config = {
   mode: "visualize",
   topic: "/joy",
-  buttonMapping: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
-  axesMapping: [0, 1, 2, 3],
+  mappingPreset: "default",
+  buttonMapping: MAPPING_PRESETS.default.buttonMapping,
+  axesMapping: MAPPING_PRESETS.default.axesMapping,
+  deadzone: 0.1,
 };
 
 // ROS sensor_msgs/Joy message type
@@ -51,6 +74,17 @@ function JoystickPanel({ context }: { context: PanelExtensionContext }): ReactEl
   const [renderDone, setRenderDone] = useState<(() => void) | undefined>();
   const { gamepad, isConnected } = useGamepad();
 
+  // Apply deadzone to axis value
+  const applyDeadzone = useCallback(
+    (value: number): number => {
+      if (Math.abs(value) < config.deadzone) {
+        return 0;
+      }
+      return value;
+    },
+    [config.deadzone],
+  );
+
   // Save config changes
   useEffect(() => {
     context.saveState(config);
@@ -66,6 +100,35 @@ function JoystickPanel({ context }: { context: PanelExtensionContext }): ReactEl
           newConfig.mode = value as Mode;
         } else if (path[0] === "general" && path[1] === "topic") {
           newConfig.topic = value as string;
+        } else if (path[0] === "mapping" && path[1] === "mappingPreset") {
+          const preset = value as MappingPreset;
+          newConfig.mappingPreset = preset;
+          // Apply preset mapping if not custom
+          if (preset !== "custom") {
+            const presetMapping = MAPPING_PRESETS[preset];
+            newConfig.buttonMapping = [...presetMapping.buttonMapping];
+            newConfig.axesMapping = [...presetMapping.axesMapping];
+          }
+        } else if (path[0] === "mapping" && path[1] === "buttonMapping") {
+          // Parse comma-separated string to number array
+          const parsed = (value as string)
+            .split(",")
+            .map((s) => parseInt(s.trim()))
+            .filter((n) => !isNaN(n));
+          newConfig.buttonMapping = parsed;
+          // Switch to custom preset when manually editing
+          newConfig.mappingPreset = "custom";
+        } else if (path[0] === "mapping" && path[1] === "axesMapping") {
+          // Parse comma-separated string to number array
+          const parsed = (value as string)
+            .split(",")
+            .map((s) => parseInt(s.trim()))
+            .filter((n) => !isNaN(n));
+          newConfig.axesMapping = parsed;
+          // Switch to custom preset when manually editing
+          newConfig.mappingPreset = "custom";
+        } else if (path[0] === "mapping" && path[1] === "deadzone") {
+          newConfig.deadzone = value as number;
         }
         return newConfig;
       });
@@ -96,8 +159,48 @@ function JoystickPanel({ context }: { context: PanelExtensionContext }): ReactEl
           },
         },
       },
+      mapping: {
+        label: "Gamepad Mapping",
+        fields: {
+          mappingPreset: {
+            label: "Preset",
+            input: "select",
+            value: config.mappingPreset,
+            options: [
+              { label: "Default", value: "default" },
+              { label: "DualSense (PS5)", value: "dualsense" },
+              { label: "Xbox Controller", value: "xbox" },
+              { label: "Custom", value: "custom" },
+            ],
+            help: "Select a controller preset or choose Custom to manually configure",
+          },
+          buttonMapping: {
+            label: "Button Mapping",
+            help: "Comma-separated button indices (e.g., 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17). Editing this will switch to Custom preset.",
+            input: "string",
+            value: config.buttonMapping.join(","),
+            readonly: config.mappingPreset !== "custom",
+          },
+          axesMapping: {
+            label: "Axes Mapping",
+            help: "Comma-separated axes indices (e.g., 0,1,2,3). Editing this will switch to Custom preset.",
+            input: "string",
+            value: config.axesMapping.join(","),
+            readonly: config.mappingPreset !== "custom",
+          },
+          deadzone: {
+            label: "Deadzone",
+            input: "number",
+            value: config.deadzone,
+            min: 0,
+            max: 1,
+            step: 0.01,
+            help: "Deadzone threshold for axes (0.0 - 1.0). Values within this range will be treated as 0.",
+          },
+        },
+      },
     };
-  }, [config]);
+  }, [config, topics]);
 
   useEffect(() => {
     context.updatePanelSettingsEditor({
@@ -154,12 +257,12 @@ function JoystickPanel({ context }: { context: PanelExtensionContext }): ReactEl
         },
         frame_id: "",
       },
-      axes: config.axesMapping.map((idx) => gamepad.axes[idx] ?? 0),
+      axes: config.axesMapping.map((idx) => applyDeadzone(gamepad.axes[idx] ?? 0)),
       buttons: config.buttonMapping.map((idx) => (gamepad.buttons[idx]?.pressed ? 1 : 0)),
     };
 
     context.publish?.(config.topic, joyMessage);
-  }, [config, gamepad, isConnected, context]);
+  }, [config, gamepad, isConnected, context, applyDeadzone]);
 
   // Signal render done
   useEffect(() => {
